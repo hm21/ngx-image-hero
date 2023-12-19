@@ -1,27 +1,139 @@
-# NgxImageHero
+<h1>ngx-image-hero</h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.0.
+<div>
 
-## Development server
+[![npm version](https://badge.fury.io/js/ngx-image-hero.svg)](https://badge.fury.io/js/ngx-image-hero)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Twitter Follow](https://img.shields.io/twitter/follow/hm21.svg)](https://twitter.com/Frei2100)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+</div>
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Table of contents
 
-## Build
+- [About](#about)
+- [Getting started](#getting-started)
+- [Documentation](#documentation)
+- [Example](#example)
+- [Contributing](#contributing)
+- [License](LICENSE)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+<h2>About</h2>
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+A package to implement hero animations, allowing users to click on images and smoothly zoom them into a larger, immersive view, enhancing the user experience and interaction with images.
 
-## Running end-to-end tests
+<h2>Getting started</h2>
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Installation
 
-## Further help
+```sh
+npm install ngx-image-hero
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Using the directive
+
+#### Standalone component
+```typescript
+import { Component } from '@angular/core';
+import { NgxImageHeroDirective } from 'ngx-image-hero';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
+  imports: [ NgxImageHeroDirective ],
+})
+export class AppComponent {}
+```
+
+#### Or for Module
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+
+import { NgxImageHeroDirective } from 'ngx-image-hero';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    NgxImageHeroDirective,
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+
+<h2>Documentation</h2>
+
+### Inputs
+
+| Option                   | Type      | Default | Comment                                                                                              |
+| :----------------------- | :-------- | :------ | :--------------------------------------------------------------------------------------------------- |
+| highQualityPath          | string    |         | The path to the high-quality image or content to be displayed, which seamlessly replaces the current picture when opened. |
+| fixedHero                | boolean   | false   | Specifies whether to use the fixed-hero mode when absolute positioning is not effective due to overflow issues. |
+| supportedFormats         | string[]  |         | An array of supported image formats, which is only required when using the `<picture>` element where the browser automatically selects the format. |
+| browserSupportAvif       | boolean   |         | If you have already manually determined whether the browser supports AVIF, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when `supportedFormats` contains values. |
+| browserSupportWebP       | boolean   |         | If you have already manually determined whether the browser supports WebP, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when `supportedFormats` contains values. |
+
+
+
+### Outputs
+
+| Option      | Type                  | Comment                                       |
+|:------------|:----------------------|:----------------------------------------------|
+| openHero    | EventEmitter\<void\>  | Triggered when the hero animation starts. |
+| closeHero   | EventEmitter\<void\>  | Triggered when the hero animation ends.   |
+
+<h2>Example</h2>
+
+#### Simple example
+```html
+<img ngxHero src="https://picsum.photos/id/200/400" alt="demo-image" />
+```
+
+#### Complete example demonstrating all properties
+```html
+<picture>
+  @for (format of imgFormats; track format) {
+  <source srcset="assets/img/demo.{{format}}" type="image/{{ format }}" />
+  }
+  <img
+    ngxHero
+    fixedHero="false"
+    highQualityPath="assets/img/demo_4x"
+    browserSupportAvif="supportAvif"
+    browserSupportWebP="supportWebP"
+    [supportedFormats]="['avif', 'webp', 'jpeg']"
+    (openHero)="onOpenHero()"
+    (closeHero)="onCloseHero()"
+    src="assets/img/demo.jpeg"
+    alt="demo-image"
+  />
+</picture>
+```
+
+## Contributing
+
+I welcome contributions from the open-source community to make this project even better. Whether you want to report a bug, suggest a new feature, or contribute code, I appreciate your help.
+
+### Bug Reports and Feature Requests
+
+If you encounter a bug or have an idea for a new feature, please open an issue on my [GitHub Issues](https://github.com/hm21/ngx-image-hero/issues) page. I will review it and discuss the best approach to address it.
+
+### Code Contributions
+
+If you'd like to contribute code to this project, please follow these steps:
+
+1. Fork the repository to your GitHub account.
+2. Clone your forked repository to your local machine.
+
+```bash
+git clone https://github.com/hm21/ngx-scroll-animations.git
+```
