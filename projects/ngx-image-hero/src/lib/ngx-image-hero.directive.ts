@@ -86,8 +86,9 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.el.nativeElement.style.cursor = 'zoom-in';
+    this.el.nativeElement.classList.add('ngx-hero');
     if (isPlatformBrowser(this.platformId) && !isMobileDevice()) {
-      this.el.nativeElement.style.cursor = 'zoom-in'; this.el.nativeElement.classList.add('ngx-hero');
       this.setupListeners();
       if (this.supportedFormats && this.browserSupportAvif === undefined && this.browserSupportWebP === undefined) {
         this.imgManager.checkImageSupport();
