@@ -1,0 +1,36 @@
+{
+  "name": "ngx-image-hero",
+  "version": "1.0.0",
+  "description": "A package to implement hero animations, allowing users to click on images and smoothly zoom them into a larger, immersive view, enhancing the user experience and interaction with images.",
+  "author": {
+    "name": "Alex Frei",
+    "email": "alex.frei@waio.ch",
+    "url": "https://waio.ch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hm21/ngx-image-hero.git"
+  },
+  "keywords": [
+    "angular",
+    "angular2",
+    "image",
+    "hero",
+    "animation",
+    "zoom"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hm21/ngx-image-hero/issues"
+  },
+  "homepage": "https://github.com/hm21/ngx-image-hero#readme",
+  "contributors": [],
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=17.0.0",
+    "@angular/core": ">=17.0.0"
+  },
+  "sideEffects": false
+}
