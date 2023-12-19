@@ -341,7 +341,6 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       el.style.position = 'relative';
     }
 
-    console.log(backdrop)
     if (backdrop) {
       backdrop.classList.replace('ngx-hero-fade-in', 'ngx-hero-fade-out');
       fromEvent(backdrop, 'animationend').pipe(
@@ -349,7 +348,6 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
       ).subscribe(() => {
         backdrop.remove();
-        console.log('remove')
       });
     }
 
