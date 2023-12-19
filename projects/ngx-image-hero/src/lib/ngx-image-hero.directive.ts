@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, Subject, filter, fromEvent, take, takeUntil, timer } from 'rxjs';
 import { NgxImageHeroService } from './ngx-image-hero.service';
 import { isMobileDevice } from './utils/device-checker';
+import { ImgManagerService } from './utils/img-manager.service';
 
 @Directive({
   selector: '[ngxHero]',
@@ -17,15 +18,27 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
  */
   @Input({ transform: booleanAttribute }) fixedHero?: boolean;
 
+
+  @Input() browserSupportAvif?: boolean | string;
+  @Input() browserSupportWebP?: boolean | string;
+
   /**
    * The path to the high-quality image or content to be displayed.
    */
   @Input() highQualityPath?: string;
 
+
   /**
    * An array of supported image formats.
+   *
+   * @example
+   * When `supportedFormats` includes ['avif', 'webp', 'jpeg'], the URL should only contain the image name without a specific format extension like img/name without .avif. 
+   * The library will automatically choose the best-supported format from the list.
+   *
+   * @type {string[] | undefined}
    */
   @Input() supportedFormats?: string[];
+
 
   /**
    * Event emitter for when the dialog is opened.
@@ -59,6 +72,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   private zone = inject(NgZone);
   private renderer = inject(Renderer2);
   private cdRef = inject(ChangeDetectorRef);
+  private imgManager = inject(ImgManagerService);
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -67,7 +81,11 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId) && !isMobileDevice()) {
+      this.el.nativeElement.style.cursor = 'zoom-in';      this.el.nativeElement.classList.add('ngx-hero');
       this.setupListeners();
+      if (this.supportedFormats && !this.browserSupportAvif && !this.browserSupportWebP) {
+        this.imgManager.checkImageSupport();
+      }
     }
   }
 
@@ -93,7 +111,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     this.imageHeroService.scroll$?.pipe(
       takeUntilDestroyed(this.destroyRef),
       filter(() => this.expanded)
-    ).subscribe(() => this.close());
+    ).subscribe(() => this.closeDialog());
   }
 
   /**
@@ -112,16 +130,16 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   private toggleExpandState() {
     this.expanded = !this.expanded;
     if (this.expanded) {
-      this.open();
+      this.openDialog();
     } else {
-      this.close();
+      this.closeDialog();
     }
   }
 
   /**
-   * Opens the hero animation effect.
+   * Start the hero animation effect.
    */
-  public open() {
+  public openDialog() {
     function preloadImage(url: string): Observable<Event> {
       return new Observable((observer) => {
         const img = new Image();
@@ -170,12 +188,12 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     el.style.zIndex = '9999';
     el.style.cursor = 'zoom-out';
 
-    if (this.highQualityPath && el.parentElement?.querySelectorAll('source')?.length !== 0) {
+    if (this.highQualityPath) {
       let highQualityPath = this.highQualityPath;
       if (this.supportedFormats) {
-        if (this.supportedFormats.includes('avif') && this.imgManager.support.avif) {
+        if (this.supportedFormats.includes('avif') && (this.browserSupportAvif || this.imgManager.support.avif)) {
           highQualityPath += '.avif';
-        } else if (this.supportedFormats.includes('webp') && this.imgManager.support.webP) {
+        } else if (this.supportedFormats.includes('webp') && this.browserSupportWebP || this.imgManager.support.webP) {
           highQualityPath += '.webp';
         } else if (this.supportedFormats.includes('png')) {
           highQualityPath += '.png';
@@ -268,7 +286,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   /**
    * Closes the hero animation effect.
    */
-  public close() {
+  public closeDialog() {
     this.expanded = false;
     this.reset$.next(true);
 
@@ -317,14 +335,15 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       el.style.position = 'relative';
     }
 
+    console.log(backdrop)
     if (backdrop) {
-      backdrop.classList.replace('fade-in', 'fade-out');
+      backdrop.classList.replace('ngx-hero-fade-in', 'ngx-hero-fade-out');
       fromEvent(backdrop, 'animationend').pipe(
         takeUntilDestroyed(this.destroyRef),
-        take(1),
-        takeUntil(this.reset$),
+
       ).subscribe(() => {
         backdrop.remove();
+        console.log('remove')
       });
     }
 
@@ -356,7 +375,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     backdrop.style.cursor = 'zoom-out';
     backdrop.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
 
-    backdrop.classList.add('fade-in');
+    backdrop.classList.add('ngx-hero-fade-in');
 
     // Add click listener to the backdrop
     fromEvent(backdrop, 'click').pipe(
@@ -364,7 +383,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       take(1),
       takeUntil(this.reset$),
     ).subscribe(() => {
-      this.close();
+      this.closeDialog();
     });
 
     this.document.body.appendChild(backdrop);

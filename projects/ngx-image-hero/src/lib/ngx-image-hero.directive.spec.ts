@@ -41,10 +41,10 @@ describe('NgxImageHeroDirective', () => {
     spyOn(directive.openHero, 'emit');
     spyOn(directive.closeHero, 'emit');
 
-    directive.open();
+    directive.openDialog();
     expect(directive.openHero.emit).toHaveBeenCalled();
 
-    directive.close();
+    directive.closeDialog();
     expect(directive.closeHero.emit).toHaveBeenCalled();
 
     documentMock.getElementById('hero-backdrop')?.remove();

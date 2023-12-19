@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { NgxImageHeroDirective } from '../../../ngx-image-hero/src/public-api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [
+    NgxImageHeroDirective,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'demo';
+
+  public imgFormats = ['avif', 'webp', 'jpeg'];
+  public placeholders = Array(20);
 }
