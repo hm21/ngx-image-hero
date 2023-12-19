@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgxImageHeroDirective } from '../../../ngx-image-hero/src/public-api';
+import { NgxImageHeroDirective } from 'ngx-image-hero';
 
 @Component({
   selector: 'app-root',

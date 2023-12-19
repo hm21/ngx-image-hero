@@ -18,18 +18,24 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
  */
   @Input({ transform: booleanAttribute }) fixedHero?: boolean;
 
-
+  /**
+   * If you have already manually determined whether the browser supports AVIF, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when 'supportedFormats' contains values.
+   */
   @Input() browserSupportAvif?: boolean | string;
+
+  /**
+   * If you have already manually determined whether the browser supports WebP, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when 'supportedFormats' contains values.
+   */
   @Input() browserSupportWebP?: boolean | string;
 
   /**
-   * The path to the high-quality image or content to be displayed.
+   * The path to the high-quality image or content to be displayed, which seamlessly replaces the current picture when opened.
    */
   @Input() highQualityPath?: string;
 
 
   /**
-   * An array of supported image formats.
+   * An array of supported image formats, which is only required when using the `<picture>` element where the browser automatically selects the format.
    *
    * @example
    * When `supportedFormats` includes ['avif', 'webp', 'jpeg'], the URL should only contain the image name without a specific format extension like img/name without .avif. 
@@ -41,12 +47,12 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
 
   /**
-   * Event emitter for when the dialog is opened.
+   * Event emitter triggered when the hero animation start.
    */
   @Output() openHero = new EventEmitter<void>();
 
   /**
-   * Event emitter for when the dialog is closed.
+   * Event emitter triggered when the hero animation end.
    */
   @Output() closeHero = new EventEmitter<void>();
 
@@ -81,9 +87,9 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId) && !isMobileDevice()) {
-      this.el.nativeElement.style.cursor = 'zoom-in';      this.el.nativeElement.classList.add('ngx-hero');
+      this.el.nativeElement.style.cursor = 'zoom-in'; this.el.nativeElement.classList.add('ngx-hero');
       this.setupListeners();
-      if (this.supportedFormats && !this.browserSupportAvif && !this.browserSupportWebP) {
+      if (this.supportedFormats && this.browserSupportAvif === undefined && this.browserSupportWebP === undefined) {
         this.imgManager.checkImageSupport();
       }
     }
