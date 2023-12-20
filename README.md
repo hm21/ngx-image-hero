@@ -1,4 +1,4 @@
-<h1>ngx-image-hero</h1>
+<h1>angular 9+ image-hero</h1>
 
 <div>
 
@@ -40,14 +40,14 @@ npm install ngx-image-hero
 #### Standalone component
 ```typescript
 import { Component } from '@angular/core';
-import { NgxImageHeroDirective } from 'ngx-image-hero';
+import { NgxImageHeroModule } from 'ngx-image-hero';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [ NgxImageHeroDirective ],
+  imports: [ NgxImageHeroModule ],
 })
 export class AppComponent {}
 ```
@@ -58,7 +58,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
-import { NgxImageHeroDirective } from 'ngx-image-hero';
+import { NgxImageHeroModule } from 'ngx-image-hero';
 
 @NgModule({
   declarations: [
@@ -66,7 +66,7 @@ import { NgxImageHeroDirective } from 'ngx-image-hero';
   ],
   imports: [
     BrowserModule,
-    NgxImageHeroDirective,
+    NgxImageHeroModule,
   ],
   bootstrap: [AppComponent]
 })

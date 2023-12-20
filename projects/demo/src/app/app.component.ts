@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { NgxImageHeroDirective } from 'ngx-image-hero';
+import { NgxImageHeroModule } from 'ngx-image-hero';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    NgxImageHeroDirective,
+    NgxImageHeroModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

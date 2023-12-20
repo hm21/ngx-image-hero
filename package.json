@@ -1,6 +1,6 @@
 {
   "name": "ngx-image-hero",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A package to implement hero animations, allowing users to click on images and smoothly zoom them into a larger, immersive view, enhancing the user experience and interaction with images.",
   "author": {
     "name": "Alex Frei",
@@ -29,7 +29,7 @@
     "ng": "ng",
     "start": "ng serve",
     "npm:publish": "npm run build & cd dist/ngx-image-hero & npm publish",
-    "build": "ng build ngx-image-hero & npm run build:copyfiles & npm run build:styles",
+    "build": "ng build ngx-image-hero & npm run build:copyfiles",
     "build:copyfiles": "copyfiles CHANGELOG.md README.md LICENSE dist/ngx-image-hero",
     "build:styles": "sass --style compressed dist/ngx-image-hero/styles/animations.scss dist/ngx-image-hero/styles/animations.min.scss & sass dist/ngx-image-hero/styles/animations.scss dist/ngx-image-hero/styles/animations.css & sass --style compressed dist/ngx-image-hero/styles/animations.scss dist/ngx-image-hero/styles/animations.min.css",
     "watch": "ng build --watch --configuration development",

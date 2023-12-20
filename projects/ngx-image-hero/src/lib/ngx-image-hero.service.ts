@@ -1,6 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, fromEvent, share, throttleTime } from 'rxjs';
+import { Observable, fromEvent } from 'rxjs';
+import { share, throttleTime } from 'rxjs/operators';
 
 /**
  * Service to create an observable that emits increasing numbers periodically.
@@ -62,9 +63,9 @@ export class NgxImageHeroService {
       }
     `;
 
-    const styleElement = document.createElement('style');
+    const styleElement = this.document.createElement('style');
     styleElement.textContent = fadeInCSS + fadeOutCSS;
 
-    document.head.appendChild(styleElement);
+    this.document.head.appendChild(styleElement);
   }
 }

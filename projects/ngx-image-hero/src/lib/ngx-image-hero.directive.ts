@@ -1,32 +1,39 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, DestroyRef, Directive, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, booleanAttribute, inject, isDevMode } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, Subject, filter, fromEvent, take, takeUntil, timer } from 'rxjs';
+import { ChangeDetectorRef, Directive, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, isDevMode } from '@angular/core';
+import { Observable, Subject, fromEvent, timer } from 'rxjs';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { NgxImageHeroService } from './ngx-image-hero.service';
+import { BooleanInput, coerceBooleanProperty } from './utils/coercion/coercion-boolean';
 import { isMobileDevice } from './utils/device-checker';
 import { ImgManagerService } from './utils/img-manager.service';
 
 @Directive({
   selector: '[ngxHero]',
-  standalone: true
 })
 export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
+  private _fixedHero?: boolean;
   /**
  * Specifies whether to use the fixed-hero mode when absolute positioning is not effective due to overflow issues.
  * @description In the case absolute positioning does not work due to overflow issues, you can enable this mode.
  */
-  @Input({ transform: booleanAttribute }) fixedHero?: boolean;
+  @Input()
+  set fixedHero(value: BooleanInput) {
+    this._fixedHero = coerceBooleanProperty(value);
+  }
+  get fixedHero() {
+    return this._fixedHero;
+  }
 
   /**
    * If you have already manually determined whether the browser supports AVIF, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when 'supportedFormats' contains values.
    */
-  @Input() browserSupportAvif?: boolean | string;
+  @Input() browserSupportAvif?: BooleanInput;
 
   /**
    * If you have already manually determined whether the browser supports WebP, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when 'supportedFormats' contains values.
    */
-  @Input() browserSupportWebP?: boolean | string;
+  @Input() browserSupportWebP?: BooleanInput;
 
   /**
    * The path to the high-quality image or content to be displayed, which seamlessly replaces the current picture when opened.
@@ -60,7 +67,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   private expanded = false;
   private heroDuration = 250;
 
-  private backdrop?: HTMLElement;
+  public backdrop?: HTMLElement;
   private placeholder?: HTMLElement;
 
   private fixedHelper = {
@@ -71,16 +78,16 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   }
 
   private reset$ = new Subject();
+  private destroy$ = new Subject();
 
-  private imageHeroService = inject(NgxImageHeroService);
-  private destroyRef = inject(DestroyRef);
-  private el = inject<ElementRef<HTMLImageElement>>(ElementRef);
-  private zone = inject(NgZone);
-  private renderer = inject(Renderer2);
-  private cdRef = inject(ChangeDetectorRef);
-  private imgManager = inject(ImgManagerService);
 
   constructor(
+    private imageHeroService: NgxImageHeroService,
+    private el: ElementRef<HTMLImageElement>,
+    private zone: NgZone,
+    private renderer: Renderer2,
+    private cdRef: ChangeDetectorRef,
+    private imgManager: ImgManagerService,
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: any,
   ) { }
@@ -99,6 +106,8 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.reset$.next(true);
     this.reset$.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   /**
@@ -116,7 +125,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
    */
   private setupScrollListener() {
     this.imageHeroService.scroll$?.pipe(
-      takeUntilDestroyed(this.destroyRef),
+      takeUntil(this.destroy$),
       filter(() => this.expanded)
     ).subscribe(() => this.closeDialog());
   }
@@ -126,7 +135,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
    */
   private setupClickListener() {
     fromEvent(this.el.nativeElement, 'click').pipe(
-      takeUntilDestroyed(this.destroyRef),
+      takeUntil(this.destroy$),
       filter(() => !isMobileDevice()),
     ).subscribe(() => this.toggleExpandState());
   }
@@ -134,7 +143,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   /**
    * Toggles the expand state of the hero.
    */
-  private toggleExpandState() {
+  public toggleExpandState() {
     this.expanded = !this.expanded;
     if (this.expanded) {
       this.openDialog();
@@ -264,7 +273,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       el.style.transform = `translate(-50%, -50%)`;
 
       timer(1).pipe(
-        takeUntilDestroyed(this.destroyRef),
+        takeUntil(this.destroy$),
         takeUntil(this.reset$),
       ).subscribe(() => {
         el.style.transition = `all ${this.heroDuration}ms cubic-bezier(0.2, 0, 0.2, 1)`;
@@ -317,7 +326,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       el.style.height = `${this.fixedHelper.height}px`;
 
       timer(this.heroDuration).pipe(
-        takeUntilDestroyed(this.destroyRef),
+        takeUntil(this.destroy$),
         takeUntil(this.reset$),
       ).subscribe(() => {
         this.placeholder?.remove();
@@ -331,7 +340,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
         el.style.height = '';
 
         timer(this.heroDuration).pipe(
-          takeUntilDestroyed(this.destroyRef),
+          takeUntil(this.destroy$),
           takeUntil(this.reset$),
         ).subscribe(() => {
           el.style.transition = '';
@@ -345,7 +354,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     if (backdrop) {
       backdrop.classList.replace('ngx-hero-fade-in', 'ngx-hero-fade-out');
       fromEvent(backdrop, 'animationend').pipe(
-        takeUntilDestroyed(this.destroyRef),
+        takeUntil(this.destroy$),
 
       ).subscribe(() => {
         backdrop.remove();
@@ -353,7 +362,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     }
 
     timer(this.heroDuration).pipe(
-      takeUntilDestroyed(this.destroyRef),
+      takeUntil(this.destroy$),
       takeUntil(this.reset$),
       take(1),
     ).subscribe(() => {
@@ -384,7 +393,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
     // Add click listener to the backdrop
     fromEvent(backdrop, 'click').pipe(
-      takeUntilDestroyed(this.destroyRef),
+      takeUntil(this.destroy$),
       take(1),
       takeUntil(this.reset$),
     ).subscribe(() => {
