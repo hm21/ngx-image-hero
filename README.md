@@ -4,13 +4,16 @@
 
 [![npm version](https://badge.fury.io/js/ngx-image-hero.svg)](https://badge.fury.io/js/ngx-image-hero)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+[![Issues](https://img.shields.io/github/issues/hm21/ngx-image-hero)](https://github.com/hm21/ngx-image-hero/issues)
+[![Web Demo](https://img.shields.io/badge/web-demo---?&color=0f7dff)](https://ngx-hm21.web.app/image-hero)
 </div>
 
-<h2 >Demo</h2>
-<div>
-https://ngx-hm21.web.app/image-hero
-</div>
+<a href="https://ngx-hm21.web.app/image-hero">
+    <img src="https://github.com/hm21/ngx-image-hero/blob/stable/assets/showcase.gif?raw=true" width=450 />
+      <br/>
+      Demo Website
+</a>
+
 
 ## Table of contents
 
@@ -33,8 +36,6 @@ A package to implement hero animations, allowing users to click on images and sm
 ```sh
 npm install ngx-image-hero
 ```
-
-### Using the directive
 
 #### Standalone component
 ```typescript
