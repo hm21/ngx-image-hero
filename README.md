@@ -9,7 +9,7 @@
 </div>
 
 <a href="https://ngx-hm21.web.app/image-hero">
-    <img src="https://github.com/hm21/ngx-image-hero/blob/stable/assets/showcase.gif?raw=true" width=450 />
+    <img src="https://github.com/hm21/ngx-image-hero/blob/master/assets/showcase.gif?raw=true" width=450 />
       <br/>
       Demo Website
 </a>
