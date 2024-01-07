@@ -8,9 +8,8 @@
 [![Web Demo](https://img.shields.io/badge/web-demo---?&color=0f7dff)](https://ngx-hm21.web.app/image-hero)
 </div>
 
+<img src="https://github.com/hm21/ngx-image-hero/blob/master/assets/showcase.gif?raw=true" width=450 />
 <a href="https://ngx-hm21.web.app/image-hero">
-    <img src="https://github.com/hm21/ngx-image-hero/blob/master/assets/showcase.gif?raw=true" width=450 />
-      <br/>
       Demo Website
 </a>
 
