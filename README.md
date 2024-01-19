@@ -3,6 +3,8 @@
 <div>
 
 [![npm version](https://badge.fury.io/js/ngx-image-hero.svg)](https://badge.fury.io/js/ngx-image-hero)
+[![NPM monthly downloads](https://img.shields.io/npm/dm/ngx-image-hero.svg)](https://badge.fury.io/js/ngx-image-hero)
+[![NPM total downloads](https://img.shields.io/npm/dt/ngx-image-hero.svg)](https://badge.fury.io/js/ngx-image-hero)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Issues](https://img.shields.io/github/issues/hm21/ngx-image-hero)](https://github.com/hm21/ngx-image-hero/issues)
 [![Web Demo](https://img.shields.io/badge/web-demo---?&color=0f7dff)](https://ngx-hm21.web.app/image-hero)
