@@ -40,6 +40,11 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
    */
   @Input() highQualityPath?: string;
 
+  /**
+   * Insert backdrop at this position.
+   */
+  @Input() backdropPosition: 'documentEnd' | 'beforeHeroItem' = 'documentEnd';
+
 
   /**
    * An array of supported image formats, which is only required when using the `<picture>` element where the browser automatically selects the format.
@@ -400,7 +405,11 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       this.closeDialog();
     });
 
-    this.document.body.appendChild(backdrop);
+    if (this.backdropPosition === 'documentEnd') {
+      this.document.body.appendChild(backdrop);
+    } else {
+      this.renderer.insertBefore(this.el.nativeElement.parentElement, backdrop, this.el.nativeElement);
+    }
     this.backdrop = backdrop;
   }
 }
