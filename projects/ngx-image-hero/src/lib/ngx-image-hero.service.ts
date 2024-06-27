@@ -1,7 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, fromEvent } from 'rxjs';
-import { share, throttleTime } from 'rxjs/operators';
+import { Observable, fromEvent, share, throttleTime } from 'rxjs';
 
 /**
  * Service to create an observable that emits increasing numbers periodically.
@@ -21,7 +20,7 @@ export class NgxImageHeroService {
       // Observable for scroll events on the window
       this.createStyles();
       this.scroll$ = fromEvent(this.document, 'scroll').pipe(
-        throttleTime(50, undefined, { leading: true, trailing: true }),
+        throttleTime(250, undefined, { leading: true, trailing: true }),
         share(),
       );
     }

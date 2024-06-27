@@ -1,22 +1,21 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Directive, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, isDevMode } from '@angular/core';
-import { Observable, Subject, fromEvent, timer } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { Directive, ElementRef, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, PLATFORM_ID, Renderer2, isDevMode } from '@angular/core';
+import { Observable, Subject, filter, fromEvent, take, takeUntil, timer } from 'rxjs';
 import { NgxImageHeroService } from './ngx-image-hero.service';
 import { BooleanInput, coerceBooleanProperty } from './utils/coercion/coercion-boolean';
 import { isMobileDevice } from './utils/device-checker';
 import { ImgManagerService } from './utils/img-manager.service';
 
 @Directive({
+  standalone: true,
   selector: '[ngxHero]',
 })
 export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
-  private _fixedHero?: boolean;
   /**
- * Specifies whether to use the fixed-hero mode when absolute positioning is not effective due to overflow issues.
- * @description In the case absolute positioning does not work due to overflow issues, you can enable this mode.
- */
+   * Specifies whether to use the fixed-hero mode when absolute positioning is not effective due to overflow issues.
+   * @description In the case absolute positioning does not work due to overflow issues, you can enable this mode.
+   */
   @Input()
   set fixedHero(value: BooleanInput) {
     this._fixedHero = coerceBooleanProperty(value);
@@ -24,6 +23,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   get fixedHero() {
     return this._fixedHero;
   }
+  private _fixedHero?: boolean;
 
   /**
    * If you have already manually determined whether the browser supports AVIF, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when 'supportedFormats' contains values.
@@ -91,7 +91,6 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     private el: ElementRef<HTMLImageElement>,
     private zone: NgZone,
     private renderer: Renderer2,
-    private cdRef: ChangeDetectorRef,
     private imgManager: ImgManagerService,
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -102,7 +101,11 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
     this.el.nativeElement.classList.add('ngx-hero');
     if (isPlatformBrowser(this.platformId) && !isMobileDevice()) {
       this.setupListeners();
-      if (this.supportedFormats && this.browserSupportAvif === undefined && this.browserSupportWebP === undefined) {
+      if (this.supportedFormats &&
+        this.browserSupportAvif === undefined &&
+        this.browserSupportWebP === undefined &&
+        !this.imgManager.formatChecked$.getValue()
+      ) {
         this.imgManager.checkImageSupport();
       }
     }
@@ -120,7 +123,6 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
    */
   private setupListeners() {
     this.zone.runOutsideAngular(() => {
-      this.setupScrollListener();
       this.setupClickListener();
     });
   }
@@ -130,6 +132,7 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
    */
   private setupScrollListener() {
     this.imageHeroService.scroll$?.pipe(
+      take(1),
       takeUntil(this.destroy$),
       filter(() => this.expanded)
     ).subscribe(() => this.closeDialog());
@@ -187,6 +190,8 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
 
     if (isMobileDevice()) return;
 
+    this.setupScrollListener();
+
     const gap = 16;
 
     const el = this.el.nativeElement;
@@ -228,11 +233,13 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       preloadImage(highQualityPath).subscribe({
         next: () => {
           el.src = highQualityPath;
-          const sources = el.parentElement?.querySelectorAll('source');
-          sources?.forEach(source => {
-            this.renderer.removeChild(el.parentElement, source);
-          });
-          this.cdRef.detectChanges();
+          /// Remove old source tags when the image is inside a picture tag
+          if (el.parentElement?.tagName.toLowerCase() === 'picture') {
+            const sources = el.parentElement?.querySelectorAll('source');
+            sources?.forEach(source => {
+              this.renderer.removeChild(el.parentElement, source);
+            });
+          }
         },
         error: () => {
           if (isDevMode()) {
@@ -360,7 +367,8 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
       backdrop.classList.replace('ngx-hero-fade-in', 'ngx-hero-fade-out');
       fromEvent(backdrop, 'animationend').pipe(
         takeUntil(this.destroy$),
-
+        takeUntil(this.reset$),
+        take(1)
       ).subscribe(() => {
         backdrop.remove();
       });

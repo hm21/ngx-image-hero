@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, filter, take } from 'rxjs';
 
 /**
  * Service for managing image formats and their support.
@@ -26,6 +26,8 @@ export class ImgManagerService {
         webP: false,
         avif: false,
     }
+
+    private document = inject(DOCUMENT);
 
     /**
         * Observable that emits when image format support check is completed.
@@ -91,6 +93,6 @@ export class ImgManagerService {
      * @param {string} className - The CSS class to add.
      */
     private addClass(className: string) {
-        document.documentElement.classList.add(className);
+        this.document.documentElement.classList.add(className);
     }
 }
