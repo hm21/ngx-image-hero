@@ -25,7 +25,8 @@ describe('NgxImageHeroDirective', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [NgxImageHeroDirective, TestComponent],
+      imports: [NgxImageHeroDirective],
+      declarations: [TestComponent],
       providers: [
         { provide: ComponentFixtureAutoDetect, useValue: true },
         // Add any other providers or dependencies needed for your directive

@@ -1,6 +1,6 @@
 {
   "name": "ngx-image-hero",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A package to implement hero animations, allowing users to click on images and smoothly zoom them into a larger, immersive view, enhancing the user experience and interaction with images.",
   "author": {
     "name": "Alex Frei",
