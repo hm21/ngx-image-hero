@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## `2.0.1` - 2024.06.27
+### Fix
+- Make sure that a high quality image is applied.
+
 ## `2.0.0` - 2024.06.27
 ### Feat
 - Convert to a complete standalone solution for better support with Angular 18.
