@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NgxImageHeroDirective } from 'ngx-image-hero';
+import { NgxImageHeroDirective } from '../../../ngx-image-hero/src/public-api';
 
 @Component({
   selector: 'app-root',

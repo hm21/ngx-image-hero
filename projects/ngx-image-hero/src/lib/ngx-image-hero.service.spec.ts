@@ -1,4 +1,4 @@
-import { PLATFORM_ID } from '@angular/core';
+import { PLATFORM_ID, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 import { NgxImageHeroService } from './ngx-image-hero.service';
@@ -9,6 +9,7 @@ describe('NgxImageHeroService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideExperimentalZonelessChangeDetection(),
         NgxImageHeroService,
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]

@@ -63,30 +63,27 @@ export class AppComponent {}
 ### Inputs
 
 | Option             | Type          | Default          | Comment                                                                                                                                                                                                                                         |
-| :----------------- | :------------ | :--------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| ------------------ | ------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | highQualityPath    | string        |                  | The path to the high-quality image or content to be displayed, which seamlessly replaces the current picture when opened.                                                                                                                       |
 | fixedHero          | boolean       | false            | Specifies whether to use the fixed-hero mode when absolute positioning is not effective due to overflow issues.                                                                                                                                 |
 | supportedFormats   | string[]      |                  | An array of supported image formats, which is only required when using the `<picture>` element where the browser automatically selects the format.                                                                                              |
-| backdropPosition   | 'documentEnd' | 'beforeHeroItem' | 'documentEnd'                                                                                                                                                                                                                                   | Insert backdrop at this position. |
+| backdropPosition   | 'documentEnd' | 'beforeHeroItem' | Insert backdrop at this position.                                                                                                                                                                                                               |
 | browserSupportAvif | boolean       |                  | If you have already manually determined whether the browser supports AVIF, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when `supportedFormats` contains values. |
 | browserSupportWebP | boolean       |                  | If you have already manually determined whether the browser supports WebP, you can set it using this option. Otherwise, the package will automatically perform the check. This option is only required when `supportedFormats` contains values. |
 
 ### Outputs
 
-| Option    | Type                 | Comment                                   |
-| :-------- | :------------------- | :---------------------------------------- |
-| openHero  | EventEmitter\<void\> | Triggered when the hero animation starts. |
-| closeHero | EventEmitter\<void\> | Triggered when the hero animation ends.   |
+| Option    | Type   | Comment                                   |
+| :-------- | :----- | :---------------------------------------- |
+| openHero  | output | Triggered when the hero animation starts. |
+| closeHero | output | Triggered when the hero animation ends.   |
 
 <h2>Example</h2>
 
 #### Simple example
 
 ```html
-<img 
-    ngxHero 
-    src="https://picsum.photos/id/200/400" 
-    alt="demo-image" />
+<img ngxHero src="https://picsum.photos/id/200/400" alt="demo-image" />
 ```
 
 #### Complete example demonstrating all properties
@@ -96,17 +93,7 @@ export class AppComponent {}
   @for (format of imgFormats; track format) {
   <source srcset="assets/img/demo.{{format}}" type="image/{{ format }}" />
   }
-  <img 
-      ngxHero 
-      fixedHero="false" 
-      highQualityPath="assets/img/demo_4x" 
-      browserSupportAvif="supportAvif" 
-      browserSupportWebP="supportWebP" 
-      [supportedFormats]="['avif', 'webp', 'jpeg']" 
-      (openHero)="onOpenHero()"
-      (closeHero)="onCloseHero()" 
-      src="assets/img/demo.jpeg" 
-      alt="demo-image" />
+  <img ngxHero fixedHero="false" highQualityPath="assets/img/demo_4x" browserSupportAvif="supportAvif" browserSupportWebP="supportWebP" [supportedFormats]="['avif', 'webp', 'jpeg']" (openHero)="onOpenHero()" (closeHero)="onCloseHero()" src="assets/img/demo.jpeg" alt="demo-image" />
 </picture>
 ```
 

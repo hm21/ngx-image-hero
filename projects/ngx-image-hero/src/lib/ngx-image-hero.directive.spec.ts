@@ -1,5 +1,5 @@
-import { Component, DebugElement } from '@angular/core';
-import { ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
+import { Component, DebugElement, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NgxImageHeroDirective } from './ngx-image-hero.directive';
 
@@ -28,8 +28,7 @@ describe('NgxImageHeroDirective', () => {
       imports: [NgxImageHeroDirective],
       declarations: [TestComponent],
       providers: [
-        { provide: ComponentFixtureAutoDetect, useValue: true },
-        // Add any other providers or dependencies needed for your directive
+        provideExperimentalZonelessChangeDetection(),
       ],
     });
 
@@ -37,6 +36,8 @@ describe('NgxImageHeroDirective', () => {
     testComponent = fixture.componentInstance;
     imgDebugElement = fixture.debugElement.query(By.directive(NgxImageHeroDirective));
     directive = imgDebugElement.injector.get(NgxImageHeroDirective);
+ 
+    fixture.detectChanges();
   });
 
   it('should create the directive', () => {
@@ -44,6 +45,7 @@ describe('NgxImageHeroDirective', () => {
   });
 
   it('should have the ngx-hero class and cursor style', () => {
+    
     const imgElement = imgDebugElement.nativeElement as HTMLElement;
     expect(imgElement.classList.contains('ngx-hero')).toBe(true);
     expect(imgElement.style.cursor).toBe('zoom-in');
