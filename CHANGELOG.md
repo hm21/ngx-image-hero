@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## `3.1.0` - 2025.01.30
+### Feat
+- Run code outside NgZone for non-zoneless apps
+
 ## `3.0.0` - 2024.10.24
 ### Breaking Changes
 - **Angular Version**: Minimum supported version is now Angular 18.

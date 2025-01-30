@@ -3,6 +3,7 @@ import {
   DestroyRef,
   Directive,
   ElementRef,
+  NgZone,
   OnDestroy,
   OnInit,
   booleanAttribute,
@@ -40,6 +41,7 @@ import { ImgManagerService } from './utils/img-manager.service';
 })
 export class NgxImageHeroDirective implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
+  private ngZone = inject(NgZone);
   private isBrowser = inject(IS_BROWSER);
   private elRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private document = inject(DOCUMENT);
@@ -119,15 +121,17 @@ export class NgxImageHeroDirective implements OnInit, OnDestroy {
   ngOnInit() {
     this.elRef.nativeElement.style.cursor = 'zoom-in';
     if (this.isBrowser && !isMobileDevice()) {
-      this.setupListeners();
-      if (
-        this.supportedFormats() &&
-        this.browserSupportAvif() === undefined &&
-        this.browserSupportWebP() === undefined &&
-        !this.imgManager.formatChecked$.getValue()
-      ) {
-        this.imgManager.checkImageSupport();
-      }
+      this.ngZone.runOutsideAngular(() => {
+        this.setupListeners();
+        if (
+          this.supportedFormats() &&
+          this.browserSupportAvif() === undefined &&
+          this.browserSupportWebP() === undefined &&
+          !this.imgManager.formatChecked$.getValue()
+        ) {
+          this.imgManager.checkImageSupport();
+        }
+      });
     }
   }
 
